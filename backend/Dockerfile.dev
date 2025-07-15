@@ -1,0 +1,58 @@
+# # Backend Dockerfile
+# FROM golang:1.21-alpine AS builder
+
+# # Install air for live reload in development
+# RUN go install github.com/cosmtrek/air@latest
+
+# WORKDIR /app
+
+# # Copy go mod files
+# COPY go.mod go.su[m] ./
+# RUN go mod download
+
+# # Copy source code
+# COPY . .
+
+# # Build the application
+# RUN CGO_ENABLED=0 GOOS=linux go build -o main ./cmd/server
+
+# FROM alpine:latest
+
+# # Install ca-certificates for HTTPS requests
+# RUN apk --no-cache add ca-certificates
+
+# WORKDIR /root/
+
+# # Copy the binary from builder
+# COPY --from=builder /app/main .
+# COPY --from=builder /go/bin/air .
+
+# # Copy air config
+# COPY .air.toml .
+
+# EXPOSE 8080
+
+# # Use air for development, main for production
+# CMD ["./air"]
+
+
+FROM golang:1.24-alpine
+
+# Install Air for live reloading
+RUN go install github.com/air-verse/air@latest
+
+WORKDIR /app
+
+# Copy go mod files first for better caching
+COPY go.mod ./
+COPY go.su[m] ./
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Expose port
+EXPOSE 8080
+
+# Run with Air for live reloading
+CMD ["air"]

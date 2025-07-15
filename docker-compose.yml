@@ -1,0 +1,119 @@
+# Docker Compose configuration for Garage Management System
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: garage_db
+    environment:
+      POSTGRES_DB: garage_management
+      POSTGRES_USER: garage_user
+      POSTGRES_PASSWORD: garage_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/migrations:/docker-entrypoint-initdb.d
+    networks:
+      - garage_network
+
+  # Go Backend API - DEV
+  backend-dev:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: garage_backend_dev
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=garage_user
+      - DB_PASSWORD=garage_password
+      - DB_NAME=garage_management
+      - JWT_SECRET=your-secret-key-here
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+    networks:
+      - garage_network
+    command: air # Live reload in development
+    profiles:
+      - dev
+    
+  # Go Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: garage_backend
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=garage_user
+      - DB_PASSWORD=garage_password
+      - DB_NAME=garage_management
+      - JWT_SECRET=your-secret-key-here
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+    networks:
+      - garage_network
+    profiles:
+      - prod
+
+  # Vue Frontend - DEV
+  frontend-dev:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: garage_frontend_dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - garage_network
+    depends_on:
+      - backend-dev
+    environment:
+      - VITE_API_URL=http://backend-dev:8080
+    profiles:
+      - dev
+
+  # Vue Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: garage_frontend
+    ports:
+      - "3000:80"
+    networks:
+      - garage_network
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_URL=http://backend:8080
+    profiles:
+      - prod
+
+  # Redis for caching (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: garage_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - garage_network
+
+volumes:
+  postgres_data:
+
+networks:
+  garage_network:
+    driver: bridge
