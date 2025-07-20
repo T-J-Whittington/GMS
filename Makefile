@@ -1,3 +1,9 @@
+# Variables
+
+APP_NAME=garage-management
+DOCKER_COMPOSE=docker compose
+GO_FILES=$(shell find . -name "*.go" -type f)
+
 # Makefile for Go + Vite Docker project
 
 .PHONY: help dev prod build-dev build-prod up-dev up-prod down logs clean restart-dev restart-prod
@@ -18,6 +24,16 @@ help:
 	@echo "  clean        - Remove all containers, volumes, and images"
 	@echo "  restart-dev  - Restart development environment"
 	@echo "  restart-prod - Restart production environment"
+	@echo "  tidy         - Run go mod tidy in backend using Docker"
+	@echo "	 init		  - Run go mod init in the backend using Docker"
+
+# Go module management
+tidy:
+	docker run --rm -v ${PWD}/backend:/app -w /app golang:1.24-alpine go mod tidy
+
+# Go module initialisation
+init:
+	docker run --rm -v ${PWD}/backend:/app -w /app golang:1.24-alpine go mod init $(APP_NAME)
 
 # Development commands
 dev:
