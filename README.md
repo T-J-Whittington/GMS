@@ -10,16 +10,16 @@ GMS is based around handling customers, vehicles, jobs, inventory, etc. for gara
 
 ### As of the time of writing, the following works:
 - Docker, and containerisation.
-- - I've setup a dev profile for this, which is what I'm basing all my current work in.
-- - There's also a prod profile for, well, production. That's not seeing too much use right now.
-- - The containers which build are:
-- - - GMS
-- - - - garage_redis
-- - - - garage_db
-- - - - garage_backend (_dev)
-- - - - garage_frontend (_dev)
+    - I've setup a dev profile for this, which is what I'm basing all my current work in.
+    - There's also a prod profile for, well, production. That's not seeing too much use right now.
+    - The containers which build are:
+    - GMS
+        - garage_redis
+        - garage_db
+        - garage_backend (_dev)
+        - garage_frontend (_dev)
 - Makefile
-- - Just to shorthand a lot of things, especially for running container-specific commands like Go's tidy and init.
+    - Just to shorthand a lot of things, especially for running container-specific commands like Go's tidy and init.
 
 ### The following definitely does not work right now:
 - The entire front end, really. The Docker container builds it all and delivers a blank screen when you go to http://localhost:3000/. That's about it really, since I've just chucked in some skeleton code and focused on the backend.
