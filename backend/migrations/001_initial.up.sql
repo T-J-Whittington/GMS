@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS vehicles (
     year INTEGER NOT NULL,
     vin VARCHAR(50) UNIQUE,
     license_plate VARCHAR(20),
-    color VARCHAR(50),
+    colour VARCHAR(50),
     mileage INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -116,6 +116,7 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
+-- TODO: These need checking over. Updating every row for each update seems off.
 CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_customers_updated_at BEFORE UPDATE ON customers FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_vehicles_updated_at BEFORE UPDATE ON vehicles FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
