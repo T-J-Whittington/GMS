@@ -20,11 +20,12 @@ GMS is based around handling customers, vehicles, jobs, inventory, etc. for gara
         - garage_frontend (_dev)
 - Makefile
     - Just to shorthand a lot of things, especially for running container-specific commands like Go's tidy and init.
+ 
+### Partially functional:
+- Backend contents. To be very granular, I've been focusing on routing and, by extention, the User package first and foremost.
 
 ### The following definitely does not work right now:
 - The entire front end, really. The Docker container builds it all and delivers a blank screen when you go to http://localhost:3000/. That's about it really, since I've just chucked in some skeleton code and focused on the backend.
-- Backend contents. To be very granular, I've been focusing on routing and, by extention, the User package first and foremost.
-
 
 ### Plans/Ideas for the future:
 - The most immediate plans are to get the core functions of the backend working.
